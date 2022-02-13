@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:interact/interact.dart';
 
 import 'menus/assets.dart';
@@ -19,7 +21,7 @@ void main(List<String> arguments) async {
       runEmulatorCli();
       break;
     case Options.tests:
-      runTestCli();
+      await runTestCli();
       break;
     case Options.firebase:
       await runFirebaseCli();

@@ -14,7 +14,7 @@ final testRegExp = RegExp(r'_test.dart$');
 enum Options { unit, integration }
 enum Platform { web, android }
 
-void runTestCli() async {
+Future<dynamic> runTestCli() async {
   final picked = Select(
     prompt: 'What kind of test would you like to run ?',
     options: Options.values.map((option) => option.name).toList(),
@@ -23,31 +23,19 @@ void runTestCli() async {
   switch (Options.values[picked]) {
     case Options.unit:
       final file = await showFilePicker(unitTestDir);
-      await runUnitTests(file);
-      break;
+      return runUnitTests(file);
     case Options.integration:
-      _createDriverIfNotExist();
+      await _createDriverIfNotExist();
       final file = await showFilePicker(integrationTestDir);
       final device = await showDevicePicker();
-      await runIntegrationTests(file, device);
-      break;
+      return runIntegrationTests(file, device);
   }
 }
 
 Future<String> showFilePicker(String directory) async {
-  await _createDriverIfNotExist();
-  List<FileSystemEntity> allFiles = [];
+  final allTestPaths = await _findTestPaths(directory);
 
-  try {
-    allFiles = await Directory(directory).list(recursive: true).toList();
-  } on FileSystemException {
-    print('The directory $directory could not be found');
-    exit(2);
-  }
-  final allTestFiles =
-      allFiles.where((file) => testRegExp.hasMatch(file.path)).toList();
-
-  if (allTestFiles.isEmpty) {
+  if (allTestPaths.isEmpty) {
     print('No test found under $directory');
     exit(1);
   }
@@ -56,15 +44,29 @@ Future<String> showFilePicker(String directory) async {
     prompt: 'Which test would you like to run ?',
     options: [
       'all',
-      ...allTestFiles.map((file) => path.split(file.path).last),
+      ...allTestPaths.map((filePath) => path.split(filePath).last),
     ],
   ).interact();
 
   if (picked == 0) {
-    return integrationTestDir;
+    return directory;
   } else {
-    return allTestFiles[picked - 1].path;
+    return allTestPaths[picked - 1];
   }
+}
+
+Future<List<String>> _findTestPaths(String path) async {
+  List<FileSystemEntity> allFiles = [];
+
+  try {
+    allFiles = await Directory(path).list(recursive: true).toList();
+  } on FileSystemException {
+    print('The directory $path could not be found');
+    exit(2);
+  }
+  final allTestFiles =
+      allFiles.where((file) => testRegExp.hasMatch(file.path)).toList();
+  return allTestFiles.map((file) => file.path).toList();
 }
 
 Platform showPlatformPicker() {
@@ -110,17 +112,28 @@ Future<Process> runUnitTests(String path) async {
   );
 }
 
-Future<Process> runIntegrationTests(String path, String device) {
+Future<dynamic> runIntegrationTests(String path, String device) async {
   final flutter = which('flutter');
   if (flutter.notfound) {
     print('flutter was not found in the path');
     exit(2);
   }
-  return Process.start(
-    flutter.path!,
-    ['driver', '--driver=$driverPath', '--target=$path', '-d', device],
-    mode: ProcessStartMode.inheritStdio,
-  );
+  final isDirectory = await Directory(path).exists();
+  List<String> allTestFiles;
+  if (isDirectory) {
+    allTestFiles = await _findTestPaths(path);
+  } else {
+    allTestFiles = [path];
+  }
+
+  for (final file in allTestFiles) {
+    await Process.start(
+      'flutter',
+      ['driver', '--driver=$driverPath', '--target=$file', '-d', device],
+      mode: ProcessStartMode.inheritStdio,
+      runInShell: true,
+    );
+  }
 }
 
 Future<void> _createDriverIfNotExist() async {
