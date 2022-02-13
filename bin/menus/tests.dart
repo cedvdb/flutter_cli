@@ -78,7 +78,15 @@ Future<String> showDevicePicker() async {
   final result = await Process.run('adb', ['devices']);
   // skip 1 because the first line of the output does not contain a device
   final lines = (result.stdout as String).split('\n').skip(1);
-  final devices = lines.map((line) => line.split(' +').first).toList();
+  final devices = lines
+      .map((line) => line.trim().split(RegExp(r'\s+')).first)
+      .where((device) => device.isNotEmpty)
+      .map((device) => device.trim())
+      .toList();
+  if (devices.isEmpty) {
+    print('No active device found, connect one or start an emulator first.');
+    exit(1);
+  }
   if (devices.length == 1) {
     return devices.first;
   }
@@ -104,12 +112,7 @@ Future<Process> runUnitTests(String path) async {
 Future<Process> runIntegrationTests(String path, String device) {
   return Process.start(
     'flutter',
-    [
-      'driver',
-      '--driver=test/driver/integration_test_driver.dart',
-      '--target=$path',
-      '-d $device'
-    ],
+    ['driver', '--driver=$driverPath', '--target=$path', '-d', device],
     mode: ProcessStartMode.inheritStdio,
     runInShell: true,
   );
