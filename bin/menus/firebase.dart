@@ -12,13 +12,14 @@ Future<void> runFirebaseCli() async {
   ]).interact();
   switch (pick) {
     case 0:
-      await configureFirebase();
+      await createFirebaseDirectory();
+      await runFirebaseInit();
       break;
     case 1:
       runFlutterFireConfigure();
       break;
     case 2:
-      runFirebaseEmulator();
+      await runFirebaseEmulator();
       break;
   }
 }
@@ -29,7 +30,7 @@ class Options {
   static const runFirebaseEmulator = 'Run Firebase emulator';
 }
 
-Future<Process> configureFirebase() async {
+Future<void> createFirebaseDirectory() async {
   final isFirebaseDirPresent = await Directory(_firebaseDir).exists();
 
   if (!isFirebaseDirPresent) {
@@ -46,7 +47,6 @@ Future<Process> configureFirebase() async {
       exit(2);
     }
   }
-  return runFirebaseInit();
 }
 
 Future<Process> runFirebaseInit() {
