@@ -38,7 +38,7 @@ Future<String> showFilePicker(String directory) async {
   List<FileSystemEntity> allFiles = [];
 
   try {
-    allFiles = await Directory(directory).list().toList();
+    allFiles = await Directory(directory).list(recursive: true).toList();
   } on FileSystemException {
     print('The directory $directory could not be found');
     exit(2);
