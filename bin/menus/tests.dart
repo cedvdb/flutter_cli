@@ -9,7 +9,7 @@ const testDir = 'test';
 final unitTestDir = path.join(testDir, 'unit');
 final integrationTestDir = path.join(testDir, 'integration');
 final driverPath = path.join(testDir, 'driver', 'integration_test_driver.dart');
-final testRegExp = RegExp(r'_test.dart$');
+final testFileRegExp = RegExp(r'_test.dart$');
 
 enum Options { unit, integration }
 enum Platform { web, android }
@@ -27,8 +27,12 @@ Future<dynamic> runTestCli() async {
     case Options.integration:
       await _createDriverIfNotExist();
       final file = await showFilePicker(integrationTestDir);
+      final platform = showPlatformPicker();
+      if (platform == Platform.web) {
+        return runIntegrationTests(file, device: 'web-server');
+      }
       final device = await showDevicePicker();
-      return runIntegrationTests(file, device);
+      return runIntegrationTests(file, device: device);
   }
 }
 
@@ -65,7 +69,7 @@ Future<List<String>> _findTestPaths(String path) async {
     exit(2);
   }
   final allTestFiles =
-      allFiles.where((file) => testRegExp.hasMatch(file.path)).toList();
+      allFiles.where((file) => testFileRegExp.hasMatch(file.path)).toList();
   return allTestFiles.map((file) => file.path).toList();
 }
 
@@ -112,7 +116,8 @@ Future<Process> runUnitTests(String path) async {
   );
 }
 
-Future<dynamic> runIntegrationTests(String path, String device) async {
+Future<dynamic> runIntegrationTests(String path,
+    {required String device}) async {
   final flutter = which('flutter');
   if (flutter.notfound) {
     print('flutter was not found in the path');
