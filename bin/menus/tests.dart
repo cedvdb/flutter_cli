@@ -1,6 +1,7 @@
 import 'dart:io';
 
 // import 'package:dcli/dcli.dart';
+import 'package:dcli/dcli.dart';
 import 'package:interact/interact.dart';
 import 'package:path/path.dart' as path;
 
@@ -110,11 +111,15 @@ Future<Process> runUnitTests(String path) async {
 }
 
 Future<Process> runIntegrationTests(String path, String device) {
+  final flutter = which('flutter');
+  if (flutter.notfound) {
+    print('flutter was not found in the path');
+    exit(2);
+  }
   return Process.start(
-    'flutter',
+    flutter.path!,
     ['driver', '--driver=$driverPath', '--target=$path', '-d', device],
     mode: ProcessStartMode.inheritStdio,
-    runInShell: true,
   );
 }
 
