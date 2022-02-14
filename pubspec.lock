@@ -279,13 +279,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_flavorizr:
-    dependency: "direct main"
-    description:
-      name: flutter_flavorizr
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.2"
   flutter_gen_core:
     dependency: transitive
     description:
@@ -559,13 +552,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.1"
-  sprintf:
-    dependency: transitive
-    description:
-      name: sprintf
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.0.0"
   stack_trace:
     dependency: transitive
     description:

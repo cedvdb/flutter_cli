@@ -112,7 +112,9 @@ Future<Process> runUnitTests(String path) async {
       path,
     ],
     runInShell: true,
-    mode: ProcessStartMode.inheritStdio,
+    // run detached because
+    // https://github.com/flutter/flutter/issues/98395
+    mode: ProcessStartMode.detached,
   );
 }
 
@@ -135,7 +137,9 @@ Future<dynamic> runIntegrationTests(String path,
     await Process.start(
       'flutter',
       ['driver', '--driver=$driverPath', '--target=$file', '-d', device],
-      mode: ProcessStartMode.inheritStdio,
+      // run detached because
+      // https://github.com/flutter/flutter/issues/98395
+      mode: ProcessStartMode.detached,
       runInShell: true,
     );
   }
