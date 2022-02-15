@@ -1,1 +1,0 @@
-/// Currently this toy project has no tests. Will add if it goes beyond toy.

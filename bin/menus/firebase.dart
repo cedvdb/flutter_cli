@@ -74,7 +74,7 @@ Future<Process> runFirebaseEmulator() {
     'firebase',
     ['emulators:start'],
     workingDirectory: 'firebase',
-    mode: ProcessStartMode.inheritStdio,
+    mode: ProcessStartMode.detached,
     runInShell: true,
   );
 }

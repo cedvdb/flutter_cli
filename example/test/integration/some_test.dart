@@ -6,9 +6,12 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('integration test', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      home: Container(),
-    ));
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Container(),
+      ),
+    );
     expect(find.byType(MaterialApp), findsOneWidget);
+    await Future.delayed(const Duration(seconds: 5));
   });
 }

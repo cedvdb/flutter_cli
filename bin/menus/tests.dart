@@ -139,7 +139,7 @@ Future<dynamic> runIntegrationTests(String path,
       ['driver', '--driver=$driverPath', '--target=$file', '-d', device],
       // run detached because
       // https://github.com/flutter/flutter/issues/98395
-      mode: ProcessStartMode.detached,
+      mode: ProcessStartMode.inheritStdio,
       runInShell: true,
     );
   }
