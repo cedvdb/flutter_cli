@@ -4,22 +4,22 @@ import 'package:flutter_launcher_icons/main.dart' as flutter_icon_launcher;
 import 'package:flutter_gen_core/flutter_generator.dart' as flutter_gen_core;
 import 'package:interact/interact.dart';
 
-void runAssetsCli() {
+Future<void> runAssetsCli() async {
   final pick = Select(
     prompt: 'What would you like to do?',
     options: [
-      Options.generateLauncherIcons,
       Options.generateAssets,
+      // Options.generateLauncherIcons,
     ],
   ).interact();
 
   switch (pick) {
     case 0:
-      generateAssets();
+      await generateAssets();
       break;
-    case 1:
-      generateLauncherIcons();
-      break;
+    // case 1:
+    //   await generateLauncherIcons();
+    //   break;
   }
 }
 
@@ -37,6 +37,6 @@ void generateLauncherIcons() {
   });
 }
 
-void generateAssets() {
-  flutter_gen_core.FlutterGenerator(File('pubspec.yaml')).build();
+Future<void> generateAssets() {
+  return flutter_gen_core.FlutterGenerator(File('pubspec.yaml')).build();
 }

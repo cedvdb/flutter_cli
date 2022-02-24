@@ -78,6 +78,8 @@ Future<dynamic> runFirebaseEmulator() async {
       '--export-on-exit',
     ],
     workingDirectory: 'firebase',
+    // starting in detached because
+    // https://github.com/dart-lang/sdk/issues/48439
     mode: ProcessStartMode.detached,
     runInShell: true,
   );

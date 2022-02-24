@@ -5,7 +5,7 @@ import 'package:interact/interact.dart';
 
 enum Options { android, chromedriver }
 
-void runEmulatorCli() async {
+Future<void> runEmulatorCli() async {
   final picked = Select(
     prompt: 'For which platform would you like to run an emulator ?',
     options: Options.values.map((option) => option.name).toList(),
