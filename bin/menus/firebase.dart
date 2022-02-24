@@ -69,12 +69,17 @@ Future<Process> runFlutterFireConfigure() async {
   );
 }
 
-Future<Process> runFirebaseEmulator() {
-  return Process.start(
+Future<dynamic> runFirebaseEmulator() async {
+  final process = await Process.start(
     'firebase',
-    ['emulators:start'],
+    [
+      'emulators:start',
+      '--import=exports',
+      '--export-on-exit',
+    ],
     workingDirectory: 'firebase',
     mode: ProcessStartMode.detached,
     runInShell: true,
   );
+  return process;
 }
