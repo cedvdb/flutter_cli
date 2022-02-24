@@ -52,7 +52,7 @@ Future<Process> runAndroidEmulator(String device) {
     'emulator',
     ['-avd', device],
     runInShell: true,
-    mode: ProcessStartMode.inheritStdio,
+    mode: ProcessStartMode.detached,
   );
 }
 
@@ -67,6 +67,6 @@ Future<Process> runChromeDriver() {
     'chromedriver',
     ['--port=4444'],
     runInShell: true,
-    mode: ProcessStartMode.inheritStdio,
+    mode: ProcessStartMode.detached,
   );
 }

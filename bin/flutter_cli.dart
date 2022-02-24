@@ -7,7 +7,9 @@ import 'menus/emulator.dart';
 import 'menus/firebase.dart';
 import 'menus/tests.dart';
 
-void main(List<String> arguments) async {}
+void main(List<String> arguments) async {
+  await showMainMenu();
+}
 
 Future<void> showMainMenu() async {
   final picked = Select(
