@@ -134,18 +134,20 @@ Future<dynamic> runIntegrationTests(
   }
 
   for (final file in allTestFiles) {
-    await Process.start(
+    final process = await Process.start(
       'flutter',
       [
         'driver',
         '--driver=$driverPath',
         '--target=$file',
+        '--no-pub',
         '-d',
         device,
       ],
       mode: ProcessStartMode.inheritStdio,
       runInShell: true,
     );
+    await process.exitCode;
   }
 }
 
