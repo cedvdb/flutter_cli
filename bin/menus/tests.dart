@@ -112,14 +112,14 @@ Future<Process> runUnitTests(String path) async {
       path,
     ],
     runInShell: true,
-    // run detached because
-    // https://github.com/flutter/flutter/issues/98395
-    mode: ProcessStartMode.detached,
+    mode: ProcessStartMode.inheritStdio,
   );
 }
 
-Future<dynamic> runIntegrationTests(String path,
-    {required String device}) async {
+Future<dynamic> runIntegrationTests(
+  String path, {
+  required String device,
+}) async {
   final flutter = which('flutter');
   if (flutter.notfound) {
     print('flutter was not found in the path');
@@ -143,9 +143,7 @@ Future<dynamic> runIntegrationTests(String path,
         '-d',
         device,
       ],
-      // run detached because
-      // https://github.com/flutter/flutter/issues/98395
-      mode: ProcessStartMode.detached,
+      mode: ProcessStartMode.inheritStdio,
       runInShell: true,
     );
   }
