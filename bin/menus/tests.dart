@@ -12,6 +12,7 @@ final driverPath = path.join(testDir, 'driver', 'integration_test_driver.dart');
 final testFileRegExp = RegExp(r'_test.dart$');
 
 enum Options { unit, integration }
+
 enum Platform { web, android }
 
 Future<dynamic> runTestCli() async {
@@ -104,8 +105,8 @@ Future<String> showDevicePicker() async {
   return devices[picked];
 }
 
-Future<Process> runUnitTests(String path) async {
-  return Process.start(
+Future<dynamic> runUnitTests(String path) async {
+  final process = await Process.start(
     'flutter',
     [
       'test',
@@ -114,6 +115,7 @@ Future<Process> runUnitTests(String path) async {
     runInShell: true,
     mode: ProcessStartMode.inheritStdio,
   );
+  await process.exitCode;
 }
 
 Future<dynamic> runIntegrationTests(
